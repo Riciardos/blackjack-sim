@@ -25,7 +25,11 @@ public class Shoe {
     }
   }
 
-  void randomShuffle() {
+  public Card getNextCard() {
+    return allCards.remove(0);
+  }
+
+  public void randomShuffle() {
     List<Card> newPile = new ArrayList<>(allCards.size());
     int i = (int) Math.floor(Math.random() * DECK_SIZE);
     while ( 0 < allCards.size()) {

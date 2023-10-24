@@ -4,8 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Card {
-  ACE(1,11),
-  ONE(1,1),
+  ACE(11,1),
   TWO(2,2),
   THREE(3,3),
   FOUR(4,4),
