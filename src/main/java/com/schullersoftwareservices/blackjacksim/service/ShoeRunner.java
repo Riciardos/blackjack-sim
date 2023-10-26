@@ -28,9 +28,10 @@ public class ShoeRunner {
     log.info("Starting shoe run with {} shoes...", numOfShoes);
 
     for (int i = 0; i < numOfShoes; i++) {
-      Shoe shoe = runShoe(new Shoe(8, new ComputerRandomShuffle()));
+      shoe = runShoe(shoe);
       topCounts.updateAndGet(v -> v + shoe.getTopCount());
       lowCounts.updateAndGet(v -> v + shoe.getLowCount());
+      shoe.reset();
     }
 
     float topAverage = (float) topCounts.get() / numOfShoes;
@@ -48,11 +49,9 @@ public class ShoeRunner {
       dealer.playHand();
       log.debug("Current count: {}", shoe.getCurrentCount());
     }
-
     shoe.setAllCards(initialCards);
-
-    log.debug("Top count: {}", shoe.getTopCount());
-    log.debug("Low count: {}", shoe.getLowCount());
+    log.info("Top count: {}", shoe.getTopCount());
+    log.info("Low count: {}", shoe.getLowCount());
     return shoe;
   }
 }

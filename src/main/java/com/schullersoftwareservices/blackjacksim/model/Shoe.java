@@ -49,6 +49,12 @@ public class Shoe {
     allCards = shuffleBehaviour.shuffle(allCards);
   }
 
+  public void reset() {
+    currentCount = 0;
+    topCount = 0;
+    lowCount = 0;
+  }
+
   private void updateCount(Card card) {
     currentCount += card.getCountValue();
     if (currentCount > topCount) {
