@@ -11,10 +11,16 @@ public class Shoe {
 
   List<Card> allCards;
   List<Deck> decks;
+  Integer currentCount;
+  Integer topCount;
+  Integer lowCount;
 
   public Shoe(Integer numOfDecks) {
     decks = new ArrayList<>(numOfDecks);
     allCards = new ArrayList<>(numOfDecks * DECK_SIZE);
+    currentCount = 0;
+    topCount = 0;
+    lowCount = 0;
 
     for (int i = 0; i<numOfDecks; i++) {
       Deck deck = new Deck();
@@ -26,7 +32,9 @@ public class Shoe {
   }
 
   public Card getNextCard() {
-    return allCards.remove(0);
+    Card card = allCards.remove(0);
+    updateCount(card);
+    return card;
   }
 
   public void randomShuffle() {
@@ -37,5 +45,15 @@ public class Shoe {
       i = (int) Math.floor(Math.random() * allCards.size());
     }
     allCards = newPile;
+  }
+
+  private void updateCount(Card card) {
+    currentCount += card.getCountValue();
+    if (currentCount > topCount) {
+      topCount = currentCount;
+    }
+    if (currentCount < lowCount) {
+      lowCount = currentCount;
+    }
   }
 }

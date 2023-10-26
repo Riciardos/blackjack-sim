@@ -2,15 +2,15 @@ package com.schullersoftwareservices.blackjacksim.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Dealer implements Player {
 
   List<Card> cards;
   int softValue;
   int hardValue;
-
   Action nextAction;
-
   Shoe shoe;
 
   public Dealer(Shoe shoe) {
@@ -45,8 +45,8 @@ public class Dealer implements Player {
     while(nextAction == Action.HIT) {
       receiveCard(shoe.getNextCard());
     }
-    System.out.println(String.format("Cards: %s", cards));
-    System.out.println(String.format("Dealer value: %d %d", softValue, hardValue));
+    log.debug("Cards: {}", cards);
+    log.debug("Dealer value: {}, {}", softValue, hardValue);
   }
 
   private void reset() {
