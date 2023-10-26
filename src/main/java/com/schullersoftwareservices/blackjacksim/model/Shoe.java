@@ -2,11 +2,15 @@ package com.schullersoftwareservices.blackjacksim.model;
 
 import static com.schullersoftwareservices.blackjacksim.model.Deck.DECK_SIZE;
 
+import com.schullersoftwareservices.blackjacksim.shuffle.ComputerRandomShuffle;
+import com.schullersoftwareservices.blackjacksim.shuffle.ShuffleBehaviour;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
+@Slf4j
 public class Shoe {
 
   List<Card> allCards;
@@ -15,20 +19,23 @@ public class Shoe {
   Integer topCount;
   Integer lowCount;
 
-  public Shoe(Integer numOfDecks) {
+  ShuffleBehaviour shuffleBehaviour;
+
+  public Shoe(Integer numOfDecks, ShuffleBehaviour shuffleBehaviour) {
     decks = new ArrayList<>(numOfDecks);
     allCards = new ArrayList<>(numOfDecks * DECK_SIZE);
     currentCount = 0;
     topCount = 0;
     lowCount = 0;
 
+    this.shuffleBehaviour = shuffleBehaviour;
+
     for (int i = 0; i<numOfDecks; i++) {
-      Deck deck = new Deck();
+      Deck deck = new Deck(new ComputerRandomShuffle());
       decks.add(deck);
-      for(Card card: deck.getCards()) {
-        allCards.add(card);
-      }
+      allCards.addAll(deck.getCards());
     }
+    allCards = shuffleBehaviour.shuffle(allCards);
   }
 
   public Card getNextCard() {
@@ -37,14 +44,9 @@ public class Shoe {
     return card;
   }
 
-  public void randomShuffle() {
-    List<Card> newPile = new ArrayList<>(allCards.size());
-    int i = (int) Math.floor(Math.random() * DECK_SIZE);
-    while ( 0 < allCards.size()) {
-      newPile.add(allCards.remove(i));
-      i = (int) Math.floor(Math.random() * allCards.size());
-    }
-    allCards = newPile;
+  public void shuffle() {
+
+    allCards = shuffleBehaviour.shuffle(allCards);
   }
 
   private void updateCount(Card card) {
