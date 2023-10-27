@@ -15,8 +15,8 @@ public class BlackjackSimApplication {
 
   public static void main(String[] args) {
 
-    ShoeRunner shoeRunner = new ShoeRunner();
-    shoeRunner.analyseMultipleShoes(1000);
+    ShoeRunner shoeRunner = new ShoeRunner(6);
+    shoeRunner.analyseMultipleShoes(10000);
   }
 
 

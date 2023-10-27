@@ -52,7 +52,7 @@ public class Dealer implements Player {
   private void reset() {
     softValue = 0;
     hardValue = 0;
-    cards = new ArrayList<>();
+    cards = new ArrayList<>(10); // most likely never need to hit more than 10 cards
     nextAction = Action.HIT;
   }
 }

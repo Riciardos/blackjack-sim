@@ -18,6 +18,9 @@ public class Shoe {
   Integer currentCount;
   Integer topCount;
   Integer lowCount;
+  Integer currentTrueCount;
+  Integer topTrueCount;
+  Integer lowTrueCount;
 
   ShuffleBehaviour shuffleBehaviour;
 
@@ -27,6 +30,9 @@ public class Shoe {
     currentCount = 0;
     topCount = 0;
     lowCount = 0;
+    currentTrueCount = 0;
+    topTrueCount = 0;
+    lowTrueCount = 0;
 
     this.shuffleBehaviour = shuffleBehaviour;
 
@@ -40,7 +46,7 @@ public class Shoe {
 
   public Card getNextCard() {
     Card card = allCards.remove(0);
-    updateCount(card);
+    updateCount(card, allCards.size());
     return card;
   }
 
@@ -53,15 +59,26 @@ public class Shoe {
     currentCount = 0;
     topCount = 0;
     lowCount = 0;
+    currentTrueCount = 0;
+    topTrueCount = 0;
+    lowTrueCount = 0;
   }
 
-  private void updateCount(Card card) {
+  private void updateCount(Card card, Integer numOfCardsLeft) {
     currentCount += card.getCountValue();
+    currentTrueCount = currentCount / (numOfCardsLeft / DECK_SIZE);
     if (currentCount > topCount) {
       topCount = currentCount;
     }
     if (currentCount < lowCount) {
       lowCount = currentCount;
+    }
+
+    if (currentTrueCount > topTrueCount) {
+      topTrueCount = currentTrueCount;
+    }
+    if (currentTrueCount < lowTrueCount) {
+      lowTrueCount = currentTrueCount;
     }
   }
 }
