@@ -12,6 +12,8 @@ public class DataSet {
   private List<Integer> lowCounts;
   private List<Integer> topTrueCounts;
   private List<Integer> lowTrueCounts;
+  private List<Integer> cuttingCardCounts;
+  private List<Integer> cuttingCardTrueCounts;
 
 
 

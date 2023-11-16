@@ -1,8 +1,7 @@
 package com.schullersoftwareservices.blackjacksim.visualise;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
@@ -20,17 +19,21 @@ public class Visualiser {
 
 
   private DataSet dataSet;
-  public Visualiser() {
-
-  }
 
   public void visualise() {
 
+    visualeGraph(dataSet.getTopTrueCounts(), -8, 8 , "Top True Count");
+    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5 , "Cutting Card True Count");
+
+
+  }
+
+  private void visualeGraph(List<Integer> yValues, Integer xMin, Integer xMax, String title) {
     Frequency frequency = new Frequency();
-    dataSet.getTopTrueCounts().forEach((topCount) -> frequency.addValue(topCount));
+    yValues.forEach((count) -> frequency.addValue(count));
     CategoryChart chart = new CategoryChartBuilder().width(800).height(600)
-        .title("Top True Count distribution")
-        .xAxisTitle("Top true count")
+        .title(title)
+        .xAxisTitle(title)
         .yAxisTitle("Frequency")
         .build();
 
@@ -38,18 +41,17 @@ public class Visualiser {
     chart.getStyler().setAvailableSpaceFill(0.99);
     chart.getStyler().setOverlapped(true);
 
-    Map<Integer, Long> distributionMap = new HashMap<>();
-    for (int i =0 ; i< 15 ; i++) {
+    Map<Integer, Long> distributionMap = new LinkedHashMap<>();
+    for (int i = xMin ; i< xMax ; i++) {
       distributionMap.put(i, frequency.getCount(i));
     }
 
     List<Long> yData = new ArrayList();
     yData.addAll(distributionMap.values());
     List<Object> xData = List.of(distributionMap.keySet().toArray());
-    chart.addSeries("Top True Count", xData, yData);
+    chart.addSeries(title, xData, yData);
 
     new SwingWrapper<>(chart).displayChart();
-
   }
 
 
