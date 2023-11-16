@@ -51,7 +51,6 @@ public class Shoe {
   }
 
   public void shuffle() {
-
     allCards = shuffleBehaviour.shuffle(allCards);
   }
 
