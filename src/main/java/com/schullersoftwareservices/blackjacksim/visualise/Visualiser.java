@@ -22,18 +22,21 @@ public class Visualiser {
 
   public void visualise() {
 
-    visualeGraph(dataSet.getTopTrueCounts(), -8, 8 , "Top True Count");
-    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5 , "Cutting Card True Count");
+    visualeGraph(dataSet.getTopTrueCounts(), 0, 8, dataSet.getShuffleBehaviourName(),
+        "Top True Count");
+    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5, dataSet.getShuffleBehaviourName(),
+        "Cutting Card True Count");
 
 
   }
 
-  private void visualeGraph(List<Integer> yValues, Integer xMin, Integer xMax, String title) {
+  private void visualeGraph(List<Integer> yValues, Integer xMin, Integer xMax, String title,
+      String xAxisTitle) {
     Frequency frequency = new Frequency();
     yValues.forEach((count) -> frequency.addValue(count));
     CategoryChart chart = new CategoryChartBuilder().width(800).height(600)
         .title(title)
-        .xAxisTitle(title)
+        .xAxisTitle(xAxisTitle)
         .yAxisTitle("Frequency")
         .build();
 
@@ -42,7 +45,7 @@ public class Visualiser {
     chart.getStyler().setOverlapped(true);
 
     Map<Integer, Long> distributionMap = new LinkedHashMap<>();
-    for (int i = xMin ; i< xMax ; i++) {
+    for (int i = xMin; i < xMax; i++) {
       distributionMap.put(i, frequency.getCount(i));
     }
 

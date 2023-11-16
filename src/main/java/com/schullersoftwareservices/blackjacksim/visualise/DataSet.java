@@ -14,7 +14,7 @@ public class DataSet {
   private List<Integer> lowTrueCounts;
   private List<Integer> cuttingCardCounts;
   private List<Integer> cuttingCardTrueCounts;
-
+  private String shuffleBehaviourName;
 
 
 }

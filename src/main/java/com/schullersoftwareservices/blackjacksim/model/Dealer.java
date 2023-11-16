@@ -21,9 +21,8 @@ public class Dealer implements Player {
     this.shoe = shoe;
   }
 
-  @Override
-  public Action nextAction() {
-    return nextAction;
+  public Card getUpCard() {
+    return cards.get(0);
   }
 
   @Override
@@ -41,12 +40,12 @@ public class Dealer implements Player {
 
   @Override
   public void playHand() {
-    reset();
-    while(nextAction == Action.HIT) {
+    while (nextAction == Action.HIT) {
       receiveCard(shoe.getNextCard());
     }
     log.debug("Cards: {}", cards);
     log.debug("Dealer value: {}, {}", softValue, hardValue);
+    reset();
   }
 
   private void reset() {

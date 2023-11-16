@@ -3,8 +3,8 @@ package com.schullersoftwareservices.blackjacksim.service;
 import static com.schullersoftwareservices.blackjacksim.model.Deck.DECK_SIZE;
 
 import com.schullersoftwareservices.blackjacksim.model.Card;
-import com.schullersoftwareservices.blackjacksim.model.Dealer;
 import com.schullersoftwareservices.blackjacksim.model.Shoe;
+import com.schullersoftwareservices.blackjacksim.model.Table;
 import com.schullersoftwareservices.blackjacksim.shuffle.ShuffleBehaviour;
 import com.schullersoftwareservices.blackjacksim.visualise.DataSet;
 import com.schullersoftwareservices.blackjacksim.visualise.Visualiser;
@@ -19,13 +19,17 @@ public class ShoeRunner {
 
   private Shoe shoe;
   private Visualiser visualiser;
-
   private Integer cutPoint;
+  private Table table;
+
+  private String shuffleBehaviourName;
 
   public ShoeRunner(Integer numOfDecks, ShuffleBehaviour shuffleBehaviour, Integer cutPoint) {
     this.shoe = new Shoe(numOfDecks, shuffleBehaviour);
     this.visualiser = new Visualiser();
     this.cutPoint = cutPoint;
+    this.shuffleBehaviourName = shuffleBehaviour.name();
+    this.table = new Table(this.shoe);
   }
 
   public void analyseMultipleShoes(Integer numOfShoes) {
@@ -37,7 +41,7 @@ public class ShoeRunner {
     List<Integer> cuttingCardCounts = new ArrayList<>(numOfShoes);
     List<Integer> cuttingCardTrueCounts = new ArrayList<>(numOfShoes);
 
-    log.info("Starting shoe run with {} shoes...", numOfShoes);
+    log.info("Running single shoe a {} times...", numOfShoes);
 
     for (int i = 0; i < numOfShoes; i++) {
       shoe = runShoe(shoe);
@@ -61,6 +65,7 @@ public class ShoeRunner {
         .lowTrueCounts(lowTrueCounts)
         .cuttingCardCounts(cuttingCardCounts)
         .cuttingCardTrueCounts(cuttingCardTrueCounts)
+        .shuffleBehaviourName(shuffleBehaviourName)
         .build());
     visualiser.visualise();
     log.info("Average top count: {}", topAverage);
@@ -71,11 +76,11 @@ public class ShoeRunner {
 
   private Shoe runShoe(Shoe shoe) {
     shoe.shuffle();
-    Dealer dealer = new Dealer(shoe);
     int cutPosition = cutPoint * DECK_SIZE;
     List<Card> initialCards = new ArrayList<>(shoe.getAllCards());
     while (shoe.getAllCards().size() > cutPosition) {
-      dealer.playHand();
+      table.dealCards();
+      table.playHands();
       log.debug("Current count: {}", shoe.getCurrentCount());
     }
 

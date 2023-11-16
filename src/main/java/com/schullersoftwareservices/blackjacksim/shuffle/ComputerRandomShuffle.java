@@ -16,4 +16,9 @@ public class ComputerRandomShuffle implements ShuffleBehaviour {
     }
     return newPile;
   }
+
+  @Override
+  public String name() {
+    return "ComputerRandomShuffle";
+  }
 }
