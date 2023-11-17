@@ -15,6 +15,8 @@ public class Table {
     this.shoe = shoe;
     this.dealer = new Dealer(shoe);
     this.players = new ArrayList<>();
+
+    players.add(new AdvantagePlayer(dealer, shoe));
   }
 
   public void dealCards() {

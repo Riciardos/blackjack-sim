@@ -43,8 +43,8 @@ public class Dealer implements Player {
     while (nextAction == Action.HIT) {
       receiveCard(shoe.getNextCard());
     }
-    log.debug("Cards: {}", cards);
-    log.debug("Dealer value: {}, {}", softValue, hardValue);
+    log.info("Cards: {}", cards);
+    log.info("Dealer value: {}, {}", softValue, hardValue);
     reset();
   }
 

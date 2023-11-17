@@ -4,5 +4,6 @@ public enum Action {
   HIT,
   STAND,
   DOUBLE,
+  DOUBLE_OTHERWISE_STAND,
   SPLIT
 }
