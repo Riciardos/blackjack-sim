@@ -44,7 +44,7 @@ public class CasinoShuffle implements ShuffleBehaviour {
         break;
       }
       // alternate adding 0-4 cards from either pile
-      double numOfCardsToBeAdded = Math.floor(Math.random() * 5);
+      double numOfCardsToBeAdded = Math.floor(Math.random() * 10);
       log.debug("Num of cards to be added: {}", numOfCardsToBeAdded);
       int counter = 0;
       if (switchCounter % 2 == 0) {

@@ -15,7 +15,6 @@ public class AdvantagePlayer implements Player {
   Action nextAction;
   Shoe shoe;
   Dealer dealer;
-
   Strategy strategy;
 
   public AdvantagePlayer(Dealer dealer, Shoe shoe) {
@@ -32,7 +31,7 @@ public class AdvantagePlayer implements Player {
   }
 
   @Override
-  public void playHand() {
+  public Hand playHand() {
 
     Card dealerUpCard = dealer.getUpCard();
     nextAction = strategy.determingNextAction(dealerUpCard, softValue, hardValue);
@@ -42,10 +41,12 @@ public class AdvantagePlayer implements Player {
       nextAction = strategy.determingNextAction(dealerUpCard, softValue, hardValue);
     }
 
-    log.info("Cards: {}", cards);
-    log.info("Player values: {}, {}", softValue, hardValue);
-    log.info("Dealer upcard : {}", dealerUpCard);
+    log.debug("Cards: {}", cards);
+    log.debug("Player values: {}, {}", softValue, hardValue);
+    log.debug("Dealer upcard : {}", dealerUpCard);
+    Hand hand = Hand.builder().cards(cards).softTotal(softValue).hardTotal(hardValue).build();
     reset();
+    return hand;
   }
 
   private void reset() {

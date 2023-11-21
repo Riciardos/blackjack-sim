@@ -25,10 +25,10 @@ public class BasicStrategy implements  Strategy {
     }
     if (Objects.equals(softTotal, hardTotal) || softTotal > 21) {
       // no aces, use hard total lookup
-      log.info("hard total: {}", hardTotal);
+      log.debug("hard total: {}", hardTotal);
       return hardTotalLookup.get(hardTotal).get(dealerUpcard);
     } else {
-      log.info("soft total: {}", softTotal);
+      log.debug("soft total: {}", softTotal);
       return softTotalLookup.get(softTotal).get(dealerUpcard);
     }
   }

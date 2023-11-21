@@ -22,11 +22,16 @@ public class Visualiser {
 
   public void visualise() {
 
-    visualeGraph(dataSet.getTopTrueCounts(), 0, 8, dataSet.getShuffleBehaviourName(),
-        "Top True Count");
-    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5, dataSet.getShuffleBehaviourName(),
-        "Cutting Card True Count");
+//    visualeGraph(dataSet.getTopTrueCounts(), 0, 8, dataSet.getShuffleBehaviourName(),
+//        "Top True Count");
+//    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5, dataSet.getShuffleBehaviourName(),
+//        "Cutting Card True Count");
 
+    visualeGraph(dataSet.getPlayerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
+        "Player Bust Count");
+
+    visualeGraph(dataSet.getDealerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
+        "Dealer Bust Count");
 
   }
 

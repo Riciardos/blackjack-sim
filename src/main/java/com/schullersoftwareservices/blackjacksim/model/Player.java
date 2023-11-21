@@ -4,5 +4,5 @@ public interface Player {
 
   void receiveCard(Card card);
 
-  void playHand();
+  Hand playHand();
 }

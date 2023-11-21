@@ -14,6 +14,8 @@ public class DataSet {
   private List<Integer> lowTrueCounts;
   private List<Integer> cuttingCardCounts;
   private List<Integer> cuttingCardTrueCounts;
+  private List<Integer> playerBustCount;
+  private List<Integer> dealerBustCount;
   private String shuffleBehaviourName;
 
 

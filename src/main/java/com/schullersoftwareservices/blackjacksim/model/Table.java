@@ -10,13 +10,17 @@ public class Table {
   List<Player> players;
 
   Shoe shoe;
+  ShoeStatistics statistics;
 
   public Table(Shoe shoe) {
     this.shoe = shoe;
     this.dealer = new Dealer(shoe);
     this.players = new ArrayList<>();
+    this.statistics = shoe.getStatistics();
 
     players.add(new AdvantagePlayer(dealer, shoe));
+    players.add(new AdvantagePlayer(dealer, shoe));
+
   }
 
   public void dealCards() {
@@ -30,8 +34,16 @@ public class Table {
 
   public void playHands() {
     for (Player player : players) {
-      player.playHand();
+      Hand hand = player.playHand();
+      if (hand.isBust()) {
+        statistics.registerPlayerBust();
+      }
+      shoe.addToDiscardPile(hand.getCards());
     }
-    dealer.playHand();
+    Hand dealerHand = dealer.playHand();
+    if (dealerHand.isBust()) {
+      statistics.registerDealerBust();
+    }
+    shoe.addToDiscardPile(dealerHand.getCards());
   }
 }

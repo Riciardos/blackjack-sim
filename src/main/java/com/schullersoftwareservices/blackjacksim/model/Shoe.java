@@ -13,27 +13,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Shoe {
 
+  Integer numOfDecks;
   List<Card> allCards;
+  List<Card> discardPile;
   List<Deck> decks;
   Integer currentCount;
-  Integer topCount;
-  Integer lowCount;
   Integer currentTrueCount;
-  Integer topTrueCount;
-  Integer lowTrueCount;
+
+  ShoeStatistics statistics;
 
   ShuffleBehaviour shuffleBehaviour;
 
   public Shoe(Integer numOfDecks, ShuffleBehaviour shuffleBehaviour) {
+    this.numOfDecks = numOfDecks;
     decks = new ArrayList<>(numOfDecks);
     allCards = new ArrayList<>(numOfDecks * DECK_SIZE);
+    discardPile = new ArrayList<>(numOfDecks * DECK_SIZE);
     currentCount = 0;
-    topCount = 0;
-    lowCount = 0;
     currentTrueCount = 0;
-    topTrueCount = 0;
-    lowTrueCount = 0;
-
+    statistics = new ShoeStatistics();
     this.shuffleBehaviour = shuffleBehaviour;
 
     for (int i = 0; i < numOfDecks; i++) {
@@ -54,42 +52,30 @@ public class Shoe {
     allCards = shuffleBehaviour.shuffle(allCards);
   }
 
+  public void addToDiscardPile(List<Card> cards) {
+    discardPile.addAll(cards);
+  }
+
   public void reset() {
     currentCount = 0;
-    topCount = 0;
-    lowCount = 0;
     currentTrueCount = 0;
-    topTrueCount = 0;
-    lowTrueCount = 0;
+    statistics.reset();
+  }
+
+  public void resetCards() {
+    allCards.addAll(discardPile);
+    discardPile = new ArrayList<>(numOfDecks * DECK_SIZE);
   }
 
   private void updateCounts(Card card, Integer numOfCardsLeft) {
     updateCurrentCounts(card, numOfCardsLeft);
-    updateTopCounts(numOfCardsLeft);
-    updateLowCounts(numOfCardsLeft);
+    statistics.updateTopCounts(currentCount, currentTrueCount);
+    statistics.updateLowCounts(currentCount, currentTrueCount);
 
   }
 
   private void updateCurrentCounts(Card card, Integer numOfCardsLeft) {
     currentCount += card.getCountValue();
     currentTrueCount = currentCount / (numOfCardsLeft / DECK_SIZE);
-  }
-
-  private void updateTopCounts(Integer numOfCardsLeft) {
-    if (currentCount > topCount) {
-      topCount = currentCount;
-    }
-    if (currentTrueCount > topTrueCount) {
-      topTrueCount = currentTrueCount;
-    }
-  }
-
-  private void updateLowCounts(Integer numOfCardsLeft) {
-    if (currentCount < lowCount) {
-      lowCount = currentCount;
-    }
-    if (currentTrueCount < lowTrueCount) {
-      lowTrueCount = currentTrueCount;
-    }
   }
 }

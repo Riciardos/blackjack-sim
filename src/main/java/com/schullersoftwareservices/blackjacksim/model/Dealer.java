@@ -39,13 +39,15 @@ public class Dealer implements Player {
   }
 
   @Override
-  public void playHand() {
+  public Hand playHand() {
     while (nextAction == Action.HIT) {
       receiveCard(shoe.getNextCard());
     }
-    log.info("Cards: {}", cards);
-    log.info("Dealer value: {}, {}", softValue, hardValue);
+    log.debug("Cards: {}", cards);
+    log.debug("Dealer value: {}, {}", softValue, hardValue);
+    Hand hand = Hand.builder().cards(cards).softTotal(softValue).hardTotal(hardValue).build();
     reset();
+    return hand;
   }
 
   private void reset() {

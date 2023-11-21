@@ -40,17 +40,22 @@ public class ShoeRunner {
     List<Integer> lowTrueCounts = new ArrayList<>(numOfShoes);
     List<Integer> cuttingCardCounts = new ArrayList<>(numOfShoes);
     List<Integer> cuttingCardTrueCounts = new ArrayList<>(numOfShoes);
+    List<Integer> playerBustCounts = new ArrayList<>(numOfShoes);
+    List<Integer> dealerBustCounts = new ArrayList<>(numOfShoes);
+
 
     log.info("Running single shoe a {} times...", numOfShoes);
 
     for (int i = 0; i < numOfShoes; i++) {
       shoe = runShoe(shoe);
-      topCounts.add(shoe.getTopCount());
-      lowCounts.add(shoe.getLowCount());
-      topTrueCounts.add(shoe.getTopTrueCount());
-      lowTrueCounts.add(shoe.getLowTrueCount());
+      topCounts.add(shoe.getStatistics().getTopCount());
+      lowCounts.add(shoe.getStatistics().getLowCount());
+      topTrueCounts.add(shoe.getStatistics().getTopTrueCount());
+      lowTrueCounts.add(shoe.getStatistics().getLowTrueCount());
       cuttingCardCounts.add(shoe.getCurrentCount());
       cuttingCardTrueCounts.add(shoe.getCurrentTrueCount() / cutPoint);
+      playerBustCounts.add(shoe.getStatistics().getPlayerBustCount());
+      dealerBustCounts.add(shoe.getStatistics().getDealerBustCount());
       shoe.reset();
     }
 
@@ -58,6 +63,7 @@ public class ShoeRunner {
     float lowAverage = (float) lowCounts.stream().reduce(0, Integer::sum) / numOfShoes;
     float topTrueAverage = (float) topTrueCounts.stream().reduce(0, Integer::sum) / numOfShoes;
     float lowTrueAverage = (float) lowTrueCounts.stream().reduce(0, Integer::sum) / numOfShoes;
+    float bustCountAverage = (float) playerBustCounts.stream().reduce(0, Integer::sum) / numOfShoes;
     visualiser.setDataSet(DataSet.builder()
         .topCounts(topCounts)
         .lowCounts(lowCounts)
@@ -66,28 +72,30 @@ public class ShoeRunner {
         .cuttingCardCounts(cuttingCardCounts)
         .cuttingCardTrueCounts(cuttingCardTrueCounts)
         .shuffleBehaviourName(shuffleBehaviourName)
+            .playerBustCount(playerBustCounts)
+            .dealerBustCount(dealerBustCounts)
         .build());
     visualiser.visualise();
     log.info("Average top count: {}", topAverage);
     log.info("Average low count: {}", lowAverage);
     log.info("Average top true count: {}", topTrueAverage);
     log.info("Average low true count: {}", lowTrueAverage);
+    log.info("Average bust count: {}", bustCountAverage);
   }
 
   private Shoe runShoe(Shoe shoe) {
     shoe.shuffle();
     int cutPosition = cutPoint * DECK_SIZE;
-    List<Card> initialCards = new ArrayList<>(shoe.getAllCards());
     while (shoe.getAllCards().size() > cutPosition) {
       table.dealCards();
       table.playHands();
       log.debug("Current count: {}", shoe.getCurrentCount());
     }
 
-    shoe.setAllCards(initialCards);
+    shoe.resetCards();
     log.debug("Count at cutting card: {}", shoe.getCurrentCount());
-    log.debug("Top count: {}", shoe.getTopCount());
-    log.debug("Low count: {}", shoe.getLowCount());
+    log.debug("Top count: {}", shoe.getStatistics().getTopCount());
+    log.debug("Low count: {}", shoe.getStatistics().getLowCount());
     return shoe;
   }
 }
