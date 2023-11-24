@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.Frequency;
@@ -27,18 +29,34 @@ public class Visualiser {
 //    visualeGraph(dataSet.getCuttingCardTrueCounts(), -5, 5, dataSet.getShuffleBehaviourName(),
 //        "Cutting Card True Count");
 
-    visualeGraph(dataSet.getPlayerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
-        "Player Bust Count");
+//    visualeGraph(dataSet.getPlayerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
+//        "Player Bust Count");
+//
+//    visualeGraph(dataSet.getDealerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
+//        "Dealer Bust Count");
 
-    visualeGraph(dataSet.getDealerBustCount(), 0, 30, dataSet.getShuffleBehaviourName(),
-        "Dealer Bust Count");
+//        visualizeHistogram(dataSet.getPlayerHandSize().stream().flatMap(List::stream).collect(Collectors.toList()), 0, 10, dataSet.getShuffleBehaviourName(),
+//        "Player Hand Size Count");
+//
+//    visualizeHistogram(dataSet.getDealerHandSize().stream().flatMap(List::stream).collect(Collectors.toList()), 0, 10, dataSet.getShuffleBehaviourName(),
+//        "Dealer Hand Size Count");
+
+//    visualizeLineChart(dataSet.getDealerHandSize().stream().map(list -> {
+//      Frequency frequency = new Frequency();
+//      list.forEach(frequency::addValue);
+//      return frequency.getCount(5);
+//    }).collect(Collectors.toList()), "Number of 5 card dealer hands",
+//        dataSet.getShuffleBehaviourName());
+
+//    visualizeLineChart((List<Number>) dataSet.getDealer6BustPercentage(), "Dealer 6 bust percentage",
+//        dataSet.getShuffleBehaviourName());
 
   }
 
-  private void visualeGraph(List<Integer> yValues, Integer xMin, Integer xMax, String title,
+  private void visualizeHistogram(List<Integer> yValues, Integer xMin, Integer xMax, String title,
       String xAxisTitle) {
     Frequency frequency = new Frequency();
-    yValues.forEach((count) -> frequency.addValue(count));
+    yValues.forEach(frequency::addValue);
     CategoryChart chart = new CategoryChartBuilder().width(800).height(600)
         .title(title)
         .xAxisTitle(xAxisTitle)
@@ -54,10 +72,28 @@ public class Visualiser {
       distributionMap.put(i, frequency.getCount(i));
     }
 
-    List<Long> yData = new ArrayList();
-    yData.addAll(distributionMap.values());
-    List<Object> xData = List.of(distributionMap.keySet().toArray());
+    List<Long> yData = new ArrayList<>(distributionMap.values());
+    List<Integer> xData = distributionMap.keySet().stream().toList();
     chart.addSeries(title, xData, yData);
+
+    new SwingWrapper<>(chart).displayChart();
+  }
+
+  public void visualizeLineChart(List<Number> yValues, String title, String xAxisTitle) {
+
+    CategoryChart chart = new CategoryChartBuilder().width(800).height(600)
+        .title(title)
+        .xAxisTitle(xAxisTitle)
+        .yAxisTitle("Frequency")
+        .build();
+
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+    chart.getStyler().setAvailableSpaceFill(0.99);
+    chart.getStyler().setOverlapped(true);
+
+    List<Integer> xData = IntStream.rangeClosed(1, yValues.size()).boxed().toList();
+    chart.addSeries(title, xData, yValues);
+
 
     new SwingWrapper<>(chart).displayChart();
   }

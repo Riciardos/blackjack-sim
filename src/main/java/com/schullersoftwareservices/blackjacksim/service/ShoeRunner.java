@@ -24,12 +24,13 @@ public class ShoeRunner {
 
   private String shuffleBehaviourName;
 
-  public ShoeRunner(Integer numOfDecks, ShuffleBehaviour shuffleBehaviour, Integer cutPoint) {
+  public ShoeRunner(Integer numOfDecks, ShuffleBehaviour shuffleBehaviour, Integer cutPoint,
+      Integer numOfPlayers) {
     this.shoe = new Shoe(numOfDecks, shuffleBehaviour);
     this.visualiser = new Visualiser();
     this.cutPoint = cutPoint;
     this.shuffleBehaviourName = shuffleBehaviour.name();
-    this.table = new Table(this.shoe);
+    this.table = new Table(this.shoe, numOfPlayers);
   }
 
   public void analyseMultipleShoes(Integer numOfShoes) {
@@ -42,7 +43,9 @@ public class ShoeRunner {
     List<Integer> cuttingCardTrueCounts = new ArrayList<>(numOfShoes);
     List<Integer> playerBustCounts = new ArrayList<>(numOfShoes);
     List<Integer> dealerBustCounts = new ArrayList<>(numOfShoes);
-
+    List<List<Integer>> playerHandSize = new ArrayList<>(numOfShoes);
+    List<List<Integer>> dealerHandSize = new ArrayList<>(numOfShoes);
+    List<Float> dealer6BustPercentage = new ArrayList<>(numOfShoes);
 
     log.info("Running single shoe a {} times...", numOfShoes);
 
@@ -56,6 +59,16 @@ public class ShoeRunner {
       cuttingCardTrueCounts.add(shoe.getCurrentTrueCount() / cutPoint);
       playerBustCounts.add(shoe.getStatistics().getPlayerBustCount());
       dealerBustCounts.add(shoe.getStatistics().getDealerBustCount());
+      playerHandSize.add(shoe.getStatistics().getPlayerNumOfCardsInHand());
+      dealerHandSize.add(shoe.getStatistics().getDealerNumOfCardsInHand());
+      if (shoe.getStatistics().getBustPercentages().get(Card.SIX).getBustCount() > 0) {
+        dealer6BustPercentage.add(
+             (float) shoe.getStatistics().getBustPercentages().get(Card.SIX).getBustCount() / (
+                shoe.getStatistics().getBustPercentages().get(Card.SIX).getBustCount() + shoe.getStatistics().getBustPercentages().get(Card.SIX).getNotBustCount()));
+      }
+      if (shoe.getStatistics().getBustPercentages().get(Card.SIX).getNotBustCount() > 0) {
+        dealer6BustPercentage.add(0f);
+      }
       shoe.reset();
     }
 
@@ -63,7 +76,12 @@ public class ShoeRunner {
     float lowAverage = (float) lowCounts.stream().reduce(0, Integer::sum) / numOfShoes;
     float topTrueAverage = (float) topTrueCounts.stream().reduce(0, Integer::sum) / numOfShoes;
     float lowTrueAverage = (float) lowTrueCounts.stream().reduce(0, Integer::sum) / numOfShoes;
-    float bustCountAverage = (float) playerBustCounts.stream().reduce(0, Integer::sum) / numOfShoes;
+    float playerBustCountAverage =
+        (float) playerBustCounts.stream().reduce(0, Integer::sum) / numOfShoes;
+    float dealerBustCountAverage =
+        (float) dealerBustCounts.stream().reduce(0, Integer::sum) / numOfShoes;
+    float dealer6BustPercentageAverage =
+        dealer6BustPercentage.stream().reduce(0f, Float::sum) / numOfShoes;
     visualiser.setDataSet(DataSet.builder()
         .topCounts(topCounts)
         .lowCounts(lowCounts)
@@ -72,15 +90,20 @@ public class ShoeRunner {
         .cuttingCardCounts(cuttingCardCounts)
         .cuttingCardTrueCounts(cuttingCardTrueCounts)
         .shuffleBehaviourName(shuffleBehaviourName)
-            .playerBustCount(playerBustCounts)
-            .dealerBustCount(dealerBustCounts)
+        .playerBustCount(playerBustCounts)
+        .dealerBustCount(dealerBustCounts)
+        .playerHandSize(playerHandSize)
+        .dealerHandSize(dealerHandSize)
+            .dealer6BustPercentage(dealer6BustPercentage)
         .build());
     visualiser.visualise();
     log.info("Average top count: {}", topAverage);
     log.info("Average low count: {}", lowAverage);
     log.info("Average top true count: {}", topTrueAverage);
     log.info("Average low true count: {}", lowTrueAverage);
-    log.info("Average bust count: {}", bustCountAverage);
+    log.info("Average player bust count: {}", playerBustCountAverage);
+    log.info("Average dealer bust count: {}", dealerBustCountAverage);
+    log.info("Average dealer 6 percentage: {}", dealer6BustPercentageAverage);
   }
 
   private Shoe runShoe(Shoe shoe) {
@@ -89,6 +112,7 @@ public class ShoeRunner {
     while (shoe.getAllCards().size() > cutPosition) {
       table.dealCards();
       table.playHands();
+      table.registerOutcomes();
       log.debug("Current count: {}", shoe.getCurrentCount());
     }
 

@@ -1,5 +1,7 @@
 package com.schullersoftwareservices.blackjacksim.model;
 
+import com.schullersoftwareservices.blackjacksim.strategy.DealerStrategy;
+import com.schullersoftwareservices.blackjacksim.strategy.Strategy;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +15,15 @@ public class Dealer implements Player {
   Action nextAction;
   Shoe shoe;
 
+  Strategy strategy;
+
   public Dealer(Shoe shoe) {
     cards = new ArrayList<>();
     softValue = 0;
     hardValue = 0;
     nextAction = Action.HIT;
     this.shoe = shoe;
+    strategy = new DealerStrategy();
   }
 
   public Card getUpCard() {
@@ -30,12 +35,7 @@ public class Dealer implements Player {
     cards.add(card);
     softValue += card.getSoftValue();
     hardValue += card.getHardValue();
-    if (softValue > 17) {
-      nextAction = Action.STAND;
-    }
-    if (softValue > 21 && hardValue < 17) {
-      nextAction = Action.HIT;
-    }
+    nextAction = strategy.determingNextAction(cards.get(0), softValue, hardValue);
   }
 
   @Override

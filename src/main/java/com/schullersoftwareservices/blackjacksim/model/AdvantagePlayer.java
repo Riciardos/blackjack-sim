@@ -36,7 +36,16 @@ public class AdvantagePlayer implements Player {
     Card dealerUpCard = dealer.getUpCard();
     nextAction = strategy.determingNextAction(dealerUpCard, softValue, hardValue);
 
+    if (nextAction == Action.SPLIT) {
+      // how do we split the hands?
+    }
+
     while (nextAction == Action.HIT || nextAction == Action.DOUBLE || nextAction == Action.DOUBLE_OTHERWISE_STAND) {
+      if (nextAction == Action.DOUBLE_OTHERWISE_STAND && cards.size() > 2) {
+        // can't double so should stand
+        nextAction = Action.STAND;
+        continue;
+      }
       receiveCard(shoe.getNextCard());
       nextAction = strategy.determingNextAction(dealerUpCard, softValue, hardValue);
     }

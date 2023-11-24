@@ -12,15 +12,15 @@ public class Table {
   Shoe shoe;
   ShoeStatistics statistics;
 
-  public Table(Shoe shoe) {
+  public Table(Shoe shoe, Integer numOfPlayers) {
     this.shoe = shoe;
     this.dealer = new Dealer(shoe);
     this.players = new ArrayList<>();
     this.statistics = shoe.getStatistics();
 
-    players.add(new AdvantagePlayer(dealer, shoe));
-    players.add(new AdvantagePlayer(dealer, shoe));
-
+    for (int i = 0 ; i < numOfPlayers ; i++) {
+      players.add(new AdvantagePlayer(dealer, shoe));
+    }
   }
 
   public void dealCards() {
@@ -35,6 +35,7 @@ public class Table {
   public void playHands() {
     for (Player player : players) {
       Hand hand = player.playHand();
+      statistics.registerPlayerNumOfCardsInHand(hand);
       if (hand.isBust()) {
         statistics.registerPlayerBust();
       }
@@ -44,6 +45,11 @@ public class Table {
     if (dealerHand.isBust()) {
       statistics.registerDealerBust();
     }
+    statistics.registerDealerNumOfCardsInHand(dealerHand);
     shoe.addToDiscardPile(dealerHand.getCards());
+  }
+
+  public void registerOutcomes() {
+
   }
 }

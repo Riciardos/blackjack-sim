@@ -16,6 +16,10 @@ public class DataSet {
   private List<Integer> cuttingCardTrueCounts;
   private List<Integer> playerBustCount;
   private List<Integer> dealerBustCount;
+  private List<List<Integer>> playerHandSize;
+  private List<List<Integer>> dealerHandSize;
+
+  private List<? extends Number> dealer6BustPercentage;
   private String shuffleBehaviourName;
 
 
